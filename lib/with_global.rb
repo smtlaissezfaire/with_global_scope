@@ -1,6 +1,6 @@
 require "using"
 
-module PrototypeProject
+module WithGlobal
   extend Using
 
   using :Version

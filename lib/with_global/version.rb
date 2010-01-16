@@ -1,4 +1,4 @@
-module PrototypeProject
+module WithGlobal
   module Version
     MAJOR = 0
     MINOR = 0
