@@ -31,13 +31,15 @@ private
       alias_method :__old_current_scoped_methods, :current_scoped_methods
 
       define_method :current_scoped_methods do
-        {
-          :find => {
-            :conditions => {
-              var => value
+        if column_names.include?(var.to_s)
+          {
+            :find => {
+              :conditions => {
+                var => value
+              }
             }
           }
-        }
+        end
       end
     end
   end

@@ -97,5 +97,16 @@ describe WithGlobal do
 
       User.find(:all).should == [user_1, user_2]
     end
+
+    it "should not scope a model which does not respond to the column" do
+      with_global = WithGlobal.new(:foo, "bar")
+
+      user_1 = create_user(:first_name => "scott")
+      user_2 = create_user(:first_name => "stephen")
+
+      with_global.execute do
+        User.find(:all).should == [user_1, user_2]
+      end
+    end
   end
 end
