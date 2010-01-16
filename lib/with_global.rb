@@ -1,4 +1,10 @@
 class WithGlobal
+  module Helper
+    def with_global(var, value, &block)
+      WithGlobal.new(var, value).execute(block)
+    end
+  end
+
   module Version
     MAJOR = 0
     MINOR = 0
@@ -15,9 +21,9 @@ class WithGlobal
   attr_reader :variable
   attr_reader :value
 
-  def execute
+  def execute(lambda)
     set_global_scope
-    yield
+    lambda.call
   ensure
     restore_scope
   end

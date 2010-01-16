@@ -27,9 +27,9 @@ describe WithGlobal do
       block_run = false
 
       with_global = WithGlobal.new(:foo, 1)
-      with_global.execute do
+      with_global.execute(lambda do
         block_run = true
-      end
+      end)
 
       block_run.should be_true
     end
@@ -40,9 +40,9 @@ describe WithGlobal do
       u1 = create_user(:first_name => "scott")
       u2 = create_user(:first_name => "stephen")
 
-      with_global.execute do
+      with_global.execute(lambda do
         User.find(:all).should == [u1]
-      end
+      end)
     end
 
     it "should use the value given" do
@@ -51,9 +51,9 @@ describe WithGlobal do
       u1 = create_user(:first_name => "scott")
       u2 = create_user(:first_name => "stephen")
 
-      with_global.execute do
+      with_global.execute(lambda do
         User.find(:all).should == [u2]
-      end
+      end)
     end
 
     it "should scope by the variable given" do
@@ -62,9 +62,9 @@ describe WithGlobal do
       u1 = create_user(:last_name => "schor")
       u2 = create_user(:last_name => "taylor")
 
-      with_global.execute do
+      with_global.execute(lambda do
         User.find(:all).should == [u2]
-      end
+      end)
     end
 
     it "should scope multiple classes" do
@@ -76,10 +76,10 @@ describe WithGlobal do
       admin_1 = create_admin(:first_name => "scott")
       admin_2 = create_admin(:first_name => "stephen")
 
-      with_global.execute do
+      with_global.execute(lambda do
         User.find(:all).should          == [user_1]
         Administrator.find(:all).should == [admin_1]
-      end
+      end)
     end
 
     it "should restore the finder if there is an error in the block" do
@@ -89,9 +89,9 @@ describe WithGlobal do
       user_2 = create_user(:first_name => "stephen")
 
       begin
-        with_global.execute do
+        with_global.execute(lambda do
           raise Exception
-        end
+        end)
       rescue Exception
       end
 
@@ -104,9 +104,9 @@ describe WithGlobal do
       user_1 = create_user(:first_name => "scott")
       user_2 = create_user(:first_name => "stephen")
 
-      with_global.execute do
+      with_global.execute(lambda do
         User.find(:all).should == [user_1, user_2]
-      end
+      end)
     end
   end
 end
