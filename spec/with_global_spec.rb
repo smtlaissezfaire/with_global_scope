@@ -17,11 +17,6 @@ describe WithGlobal do
     with_global.value.should == "baz"
   end
 
-  it "should symbolize the variable" do
-    with_global = WithGlobal.new("foo", "bar")
-    with_global.variable.should == :foo
-  end
-
   describe "execution" do
     it "should execute the block given" do
       block_run = false

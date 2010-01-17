@@ -14,7 +14,7 @@ class WithGlobal
   end
 
   def initialize(variable, value)
-    @variable = variable.to_sym
+    @variable = variable
     @value    = value
   end
 
