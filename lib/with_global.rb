@@ -1,16 +1,16 @@
 class WithGlobal
-  module Helper
-    def with_global(var, value, &block)
-      WithGlobal.new(var, value).execute(block)
-    end
-  end
-
   module Version
     MAJOR = 0
     MINOR = 0
     TINY  = 0
 
     STRING = "#{MAJOR}.#{MINOR}.#{TINY}"
+  end
+
+  module Helper
+    def with_global(var, value, &block)
+      WithGlobal.new(var, value).execute(block)
+    end
   end
 
   def initialize(variable, value)
