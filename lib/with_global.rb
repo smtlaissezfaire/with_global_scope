@@ -14,7 +14,7 @@ class WithGlobal
   end
 
   def initialize(variable, value)
-    @variable = variable
+    @variable = variable.to_s
     @value    = value
   end
 
@@ -34,7 +34,7 @@ private
       alias_method :__old_current_scoped_methods, :current_scoped_methods
 
       define_method :current_scoped_methods do
-        if column_names.include?(var.to_s)
+        if column_names.include?(var)
           {
             :find => {
               :conditions => {
