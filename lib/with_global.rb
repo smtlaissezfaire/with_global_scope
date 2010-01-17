@@ -18,9 +18,6 @@ class WithGlobal
     @value    = value
   end
 
-  attr_reader :variable
-  attr_reader :value
-
   def execute(lambda)
     set_global_scope
     lambda.call

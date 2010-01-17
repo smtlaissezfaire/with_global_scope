@@ -5,18 +5,6 @@ describe WithGlobal do
     User.delete_all
   end
 
-  it "should have the variable & value" do
-    with_global = WithGlobal.new(:foo, "bar")
-    with_global.variable.should == :foo
-    with_global.value.should == "bar"
-  end
-
-  it "should have the correct variable & value" do
-    with_global = WithGlobal.new(:bar, "baz")
-    with_global.variable.should == :bar
-    with_global.value.should == "baz"
-  end
-
   describe "execution" do
     it "should execute the block given" do
       block_run = false
