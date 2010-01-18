@@ -7,6 +7,8 @@ describe WithGlobalScope::Helper do
     end
 
     @obj = klass.new
+
+    @scope_lambda = a_lambda = lambda { }
   end
 
   it "should be a module" do
@@ -21,23 +23,15 @@ describe WithGlobalScope::Helper do
     mock_with_global_scope = mock(WithGlobalScope, :null_object => true)
     WithGlobalScope.should_receive(:new).and_return mock_with_global_scope
 
-    @obj.with_global_scope :season, 1 do
+    @obj.with_global_scope lambda {} do
     end
   end
 
-  it "should pass in the var & value" do
+  it "should pass in the block" do
     mock_with_global_scope = mock(WithGlobalScope, :null_object => true)
-    WithGlobalScope.should_receive(:new).with(:season, 1).and_return mock_with_global_scope
+    WithGlobalScope.should_receive(:new).with(@scope_lambda).and_return mock_with_global_scope
 
-    @obj.with_global_scope :season, 1 do
-    end
-  end
-
-  it "should pass in the correct var & value" do
-    mock_with_global_scope = mock(WithGlobalScope, :null_object => true)
-    WithGlobalScope.should_receive(:new).with(:foo, :bar).and_return mock_with_global_scope
-
-    @obj.with_global_scope :foo, :bar do
+    @obj.with_global_scope @scope_lambda do
     end
   end
 
@@ -49,6 +43,6 @@ describe WithGlobalScope::Helper do
 
     mock_with_global_scope.should_receive(:execute).with(lambda_expression)
 
-    @obj.with_global_scope :foo, :bar, &lambda_expression
+    @obj.with_global_scope @scope_lambda, &lambda_expression
   end
 end

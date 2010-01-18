@@ -20,9 +20,25 @@ ActiveRecord::Schema.define do
 end
 
 class User < ActiveRecord::Base
+  named_scope :by_first_name, lambda { |name|
+    {
+      :conditions => {:first_name => name}
+    }
+  }
+
+  named_scope :by_last_name, lambda { |name|
+    {
+      :conditions => {:last_name => name}
+    }
+  }
 end
 
 class Administrator < ActiveRecord::Base
+  named_scope :by_first_name, lambda { |name|
+    {
+      :conditions => {:first_name => name}
+    }
+  }
 end
 
 def create_user(hash={})

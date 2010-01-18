@@ -8,53 +8,46 @@ class WithGlobalScope
   end
 
   module Helper
-    def with_global_scope(var, value, &block)
-      WithGlobalScope.new(var, value).execute(block)
+    def with_global_scope(finder_lambda, &block)
+      WithGlobalScope.new(finder_lambda).execute(block)
     end
   end
 
-  def initialize(variable, value)
-    @variable = variable.to_s
-    @value    = value
+  def initialize(finder)
+    @finder = finder
   end
 
-  def execute(lambda)
-    set_global_scope
-    lambda.call
+  def execute(a_block)
+    swap_in_find
+    a_block.call
   ensure
-    restore_scope
+    swap_out_find
   end
 
 private
 
-  def set_global_scope
-    var, value = @variable, @value
+  def swap_in_find
+    finder_proc = @finder
 
-    ar_eval do
-      alias_method :__old_current_scoped_methods, :current_scoped_methods
+    active_record_eval do
+      if !defined?(__find_aliased_by_with_global_scope)
+        alias_method :__find_aliased_by_with_global_scope, :find
 
-      define_method :current_scoped_methods do
-        if column_names.include?(var)
-          {
-            :find => {
-              :conditions => {
-                var => value
-              }
-            }
-          }
+        define_method :find do |*args|
+          finder_proc.call(self).__find_aliased_by_with_global_scope(*args)
         end
       end
     end
   end
 
-  def restore_scope
-    ar_eval do
-      alias_method :current_scoped_methods, :__old_current_scoped_methods
-      remove_method :__old_current_scoped_methods
+  def swap_out_find
+    active_record_eval do
+      alias_method  :find, :__find_aliased_by_with_global_scope
+      remove_method :__find_aliased_by_with_global_scope
     end
   end
 
-  def ar_eval(&block)
-    ActiveRecord::Base.metaclass.class_eval(&block)
+  def active_record_eval(&block)
+    ActiveRecord::Base.metaclass.instance_eval(&block)
   end
 end
