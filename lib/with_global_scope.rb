@@ -1,4 +1,4 @@
-class WithGlobal
+class WithGlobalScope
   module Version
     MAJOR = 0
     MINOR = 0
@@ -8,8 +8,8 @@ class WithGlobal
   end
 
   module Helper
-    def with_global(var, value, &block)
-      WithGlobal.new(var, value).execute(block)
+    def with_global_scope(var, value, &block)
+      WithGlobalScope.new(var, value).execute(block)
     end
   end
 

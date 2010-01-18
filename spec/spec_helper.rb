@@ -2,7 +2,7 @@ require "spec"
 require "sqlite3"
 require "active_record"
 
-require File.expand_path(File.dirname(__FILE__) + "/../lib/with_global")
+require File.expand_path(File.dirname(__FILE__) + "/../lib/with_global_scope")
 
 ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :database  => ':memory:'
 ActiveRecord::Migration.verbose = false

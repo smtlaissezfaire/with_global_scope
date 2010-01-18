@@ -1,10 +1,10 @@
-require File.expand_path(File.dirname(__FILE__) + "/../lib/with_global")
+require File.expand_path(File.dirname(__FILE__) + "/../lib/with_global_scope")
 
 begin
   require 'jeweler'
 
   def set_version_for_jewler
-    version = WithGlobal::Version::STRING
+    version = WithGlobalScope::Version::STRING
 
     File.open(File.expand_path(File.dirname(__FILE__) + "/../VERSION"), "w") do |f|
       f << version
