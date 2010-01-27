@@ -39,9 +39,8 @@ private
 
         alias_method :_calculate_aliased_by_with_global_scope, :calculate
 
-        define_method :calculate do |operation, column_name, *args|
-          options = args.first || {}
-          finder_proc.call(self)._calculate_aliased_by_with_global_scope(operation, column_name, options)
+        define_method :calculate do |*args|
+          finder_proc.call(self)._calculate_aliased_by_with_global_scope(*args)
         end
       end
     end
