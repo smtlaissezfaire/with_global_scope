@@ -36,6 +36,13 @@ private
         define_method :find do |*args|
           finder_proc.call(self).__find_aliased_by_with_global_scope(*args)
         end
+
+        alias_method :__calculate_aliased_by_with_global_scope, :calculate
+
+        define_method :calculate do |operation, column_name, *args|
+          options = args.first || {}
+          finder_proc.call(self).__calculate_aliased_by_with_global_scope(operation, column_name, options)
+        end
       end
     end
   end
@@ -44,6 +51,9 @@ private
     active_record_eval do
       alias_method  :find, :__find_aliased_by_with_global_scope
       remove_method :__find_aliased_by_with_global_scope
+
+      alias_method  :calculate, :__calculate_aliased_by_with_global_scope
+      remove_method :__calculate_aliased_by_with_global_scope
     end
   end
 
