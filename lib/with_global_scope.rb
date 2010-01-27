@@ -30,18 +30,18 @@ private
     finder_proc = @finder
 
     active_record_eval do
-      if !defined?(__find_aliased_by_with_global_scope)
-        alias_method :__find_aliased_by_with_global_scope, :find
+      if !defined?(_find_aliased_by_with_global_scope)
+        alias_method :_find_aliased_by_with_global_scope, :find
 
         define_method :find do |*args|
-          finder_proc.call(self).__find_aliased_by_with_global_scope(*args)
+          finder_proc.call(self)._find_aliased_by_with_global_scope(*args)
         end
 
-        alias_method :__calculate_aliased_by_with_global_scope, :calculate
+        alias_method :_calculate_aliased_by_with_global_scope, :calculate
 
         define_method :calculate do |operation, column_name, *args|
           options = args.first || {}
-          finder_proc.call(self).__calculate_aliased_by_with_global_scope(operation, column_name, options)
+          finder_proc.call(self)._calculate_aliased_by_with_global_scope(operation, column_name, options)
         end
       end
     end
@@ -49,11 +49,11 @@ private
 
   def swap_out_find
     active_record_eval do
-      alias_method  :find, :__find_aliased_by_with_global_scope
-      remove_method :__find_aliased_by_with_global_scope
+      alias_method  :find, :_find_aliased_by_with_global_scope
+      remove_method :_find_aliased_by_with_global_scope
 
-      alias_method  :calculate, :__calculate_aliased_by_with_global_scope
-      remove_method :__calculate_aliased_by_with_global_scope
+      alias_method  :calculate, :_calculate_aliased_by_with_global_scope
+      remove_method :_calculate_aliased_by_with_global_scope
     end
   end
 
