@@ -30,7 +30,7 @@ private
     finder_proc = @finder
 
     active_record_eval do
-      if !defined?(_find_aliased_by_with_global_scope)
+      unless methods.include?("_find_aliased_by_with_global_scope")
         alias_method :_find_aliased_by_with_global_scope, :find
 
         define_method :find do |*args|
