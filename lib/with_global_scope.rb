@@ -8,8 +8,8 @@ class WithGlobalScope
   end
 
   module Helper
-    def with_global_scope(finder_lambda, &block)
-      WithGlobalScope.new(finder_lambda).execute(block)
+    def with_global_scope(finder_lambda, &body)
+      WithGlobalScope.new(finder_lambda).execute(body)
     end
   end
 
@@ -17,9 +17,9 @@ class WithGlobalScope
     @finder = finder
   end
 
-  def execute(a_block)
+  def execute(body_lambda)
     swap_in_find
-    a_block.call
+    body_lambda.call
   ensure
     swap_out_find
   end
@@ -29,31 +29,34 @@ private
   def swap_in_find
     finder_proc = @finder
 
-    active_record_eval do
-      unless methods.include?("_find_aliased_by_with_global_scope")
-        alias_method :_find_aliased_by_with_global_scope, :find
+    [:find, :calculate].each do |method_name|
+      alias_name = create_alias_name(method_name)
 
-        define_method :find do |*args|
-          finder_proc.call(self)._find_aliased_by_with_global_scope(*args)
-        end
+      active_record_eval do
+        unless methods.include?(alias_name)
+          alias_method alias_name, method_name
 
-        alias_method :_calculate_aliased_by_with_global_scope, :calculate
-
-        define_method :calculate do |*args|
-          finder_proc.call(self)._calculate_aliased_by_with_global_scope(*args)
+          define_method method_name do |*args|
+            finder_proc.call(self).send(alias_name, *args)
+          end
         end
       end
     end
   end
 
   def swap_out_find
-    active_record_eval do
-      alias_method  :find, :_find_aliased_by_with_global_scope
-      remove_method :_find_aliased_by_with_global_scope
+    [:find, :calculate].each do |method_name|
+      alias_name = create_alias_name(method_name)
 
-      alias_method  :calculate, :_calculate_aliased_by_with_global_scope
-      remove_method :_calculate_aliased_by_with_global_scope
+      active_record_eval do
+        alias_method method_name, alias_name
+        remove_method alias_name
+      end
     end
+  end
+
+  def create_alias_name(method_name)
+    "_#{method_name}_aliased_by_with_global_scope"
   end
 
   def active_record_eval(&block)
